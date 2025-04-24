@@ -14,18 +14,17 @@ export const getPokemons = async (
 
     const data = await pokeApi.get<PokeAPIPaginatedResponse>(url);
 
-    const pokemosPromises = data.data.results.map(info => {
+    const pokemonPromises = data.data.results.map(info => {
       return pokeApi.get<PokeAPIPokemon>(info.url);
     });
 
-    const pokeApiPokemons = await Promise.all(pokemosPromises);
+    const pokeApiPokemons = await Promise.all(pokemonPromises);
 
-    const pokemons = pokeApiPokemons.map(pokeApiPokemon =>
+    const pokemonsPromises = pokeApiPokemons.map(pokeApiPokemon =>
       PokemonMapper.pokeApiPokemonToEntity(pokeApiPokemon.data),
     );
 
-    console.log('firstPokemon', pokemons[0]);
-    return pokemons;
+    return Promise.all(pokemonsPromises);
 
     return [];
   } catch (error) {
