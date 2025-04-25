@@ -25,8 +25,6 @@ export const getPokemons = async (
     );
 
     return Promise.all(pokemonsPromises);
-
-    return [];
   } catch (error) {
     throw new Error('No se pudo obtener los pokemons');
   }

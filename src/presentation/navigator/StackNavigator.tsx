@@ -5,7 +5,9 @@ import {SearchScreen} from '../screens/search/SearchScreen';
 
 export type RootStackParams = {
   HomeScreen: undefined;
-  PokemonScreen: undefined;
+  PokemonScreen: {
+    pokemonId: number;
+  };
   SearchScreen: undefined;
 };
 const Stack = createStackNavigator<RootStackParams>();
