@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {getPokemons} from '../../../actions/pokemons';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
@@ -8,9 +8,12 @@ import {Text} from 'react-native-paper';
 import {globalTheme} from '../../../config/theme/global-theme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {PokemonCard} from '../../components/pokemons/PokemonCard';
+import {ThemeContext} from '../../context/ThemeContext';
 
 export const HomeScreen = () => {
   const {top} = useSafeAreaInsets();
+
+  const {isDark} = useContext(ThemeContext);
 
   // Forma basica de una peticion http
   // const {isLoading, data: pokemons = []} = useQuery({
@@ -38,7 +41,13 @@ export const HomeScreen = () => {
         keyExtractor={(pokemon, index) => `${pokemon.id}-${index}`}
         numColumns={2}
         style={{paddingTop: top + 20}}
-        ListHeaderComponent={() => <Text variant="displayMedium">Pokedex</Text>}
+        ListHeaderComponent={() => (
+          <Text
+            variant="displayMedium"
+            style={{color: isDark ? 'white' : 'black'}}>
+            Pokedex
+          </Text>
+        )}
         renderItem={({item}) => <PokemonCard pokemon={item} />}
         onEndReachedThreshold={0.6}
         onEndReached={() => fetchNextPage()}
