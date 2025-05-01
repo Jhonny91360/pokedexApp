@@ -11,11 +11,14 @@ import {
   getPokemonsNamesWithId,
 } from '../../../actions/pokemons';
 import {FullScreenLoader} from '../../components/ui/FullScreenLoader';
+import {useDebounceValue} from '../../hooks/useDebounceValue';
 
 export const SearchScreen = () => {
   const {top} = useSafeAreaInsets();
 
   const [term, setTerm] = useState('');
+
+  const debounceValue = useDebounceValue(term);
 
   const {isLoading, data: pokemonNameList = []} = useQuery({
     queryKey: ['pokemons', 'all'],
@@ -24,22 +27,24 @@ export const SearchScreen = () => {
 
   const pokemonNameIdList = useMemo(() => {
     // es un numero
-    if (!isNaN(Number(term))) {
+    if (!isNaN(Number(debounceValue))) {
       const pokemon = pokemonNameList.filter(
-        pokemon => pokemon.id === Number(term),
+        pokemon => pokemon.id === Number(debounceValue),
       );
       return pokemon ? [...pokemon] : [];
     }
-    if (term.length === 0) {
+    if (debounceValue.length === 0) {
       return [];
     }
 
-    if (term.length < 3) {
+    if (debounceValue.length < 3) {
       return [];
     }
 
-    return pokemonNameList.filter(pokemon => pokemon.name.includes(term));
-  }, [term]);
+    return pokemonNameList.filter(pokemon =>
+      pokemon.name.includes(debounceValue),
+    );
+  }, [debounceValue]);
 
   const {isLoading: isLoadingPokemons, data: pokemons = []} = useQuery({
     queryKey: ['pokemons', 'by', pokemonNameIdList],
