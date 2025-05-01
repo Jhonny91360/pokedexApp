@@ -4,16 +4,21 @@ import {getPokemons} from '../../../actions/pokemons';
 import {useInfiniteQuery, useQueryClient} from '@tanstack/react-query';
 import {PokeballBG} from '../../components/pokemons/PokeballBG';
 import {FlatList} from 'react-native-gesture-handler';
-import {Text} from 'react-native-paper';
+import {FAB, Text, useTheme} from 'react-native-paper';
 import {globalTheme} from '../../../config/theme/global-theme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {PokemonCard} from '../../components/pokemons/PokemonCard';
 import {ThemeContext} from '../../context/ThemeContext';
+import {StackScreenProps} from '@react-navigation/stack';
+import {RootStackParams} from '../../navigator/StackNavigator';
 
-export const HomeScreen = () => {
+interface Props extends StackScreenProps<RootStackParams, 'HomeScreen'> {}
+
+export const HomeScreen = ({navigation}: Props) => {
   const {top} = useSafeAreaInsets();
 
   const {isDark} = useContext(ThemeContext);
+  const theme = useTheme();
 
   const queryClient = useQueryClient();
   // Forma basica de una peticion http
@@ -59,6 +64,14 @@ export const HomeScreen = () => {
         onEndReachedThreshold={0.6}
         onEndReached={() => fetchNextPage()}
         showsVerticalScrollIndicator={false}
+      />
+
+      <FAB
+        label="Buscar"
+        style={[globalTheme.fab, {backgroundColor: theme.colors.primary}]}
+        mode="elevated"
+        onPress={() => navigation.push('SearchScreen')}
+        color={theme.dark ? 'white' : 'black'}
       />
     </View>
   );
